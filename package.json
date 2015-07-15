@@ -1,0 +1,25 @@
+{
+  "name": "josh",
+  "version": "1.0.0",
+  "description": "Gen Fichier Excel",
+  "main": "app://127.0.0.1/html/index.html",
+  "author": "Joshua",
+  "private": true,
+  "window": {
+    "title": "Josh",
+    "toolbar": false,
+    "frame": true,
+    "width": 1100,
+    "height": 700,
+    "show_in_taskbar": true,
+    "visible-on-all-workspaces": true
+  },
+  "user-agent": "Josh",
+  "webkit": {
+    "plugin": true,
+    "page-cache": false
+  },
+  "dependencies": {
+    "dblite": "^0.7.6"
+  }
+}
