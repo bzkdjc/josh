@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="css/materialize.min.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Josh</title>
+  <link rel="stylesheet" href="css/material-icons.css">
+  <link rel="stylesheet" href="css/josh.css">
+</head>
+<body>
+
+<header>
+  <nav id="josh-top-nav">
+    <div class="container">
+      <div class="nav-wrapper">
+        <a class="josh-page-title">Josh - [Ajouter Nouveau]</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="container">
+  <div class="row">
+    <div class="right">
+      <a id="btnback" class="waves-effect waves-light btn light-blue"><i class="material-icons left">done</i>Retour à la liste</a>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col s12">
+      <ul class="tabs">
+        <li class="tab col s6"><a class="active" href="#sans">Sans Fichier</a></li>
+        <li class="tab col s6"><a href="#avec">Avec fichier d'importation</a></li>
+      </ul>
+    </div>
+
+    <!-- tab1: sans fichier -->
+    <div id="sans" class="col s12">
+      <div class="row">
+        <div class="input-field col s6">
+          <input id="codeclient" type="number" class="validate">
+          <label for="codeclient">Code Client</label>
+        </div>
+        <div class="input-field col s6">
+          <input id="datereleve" type="date" class="datepicker">
+          <label for="datereleve">Date Relevé</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+          <input id="pharmacie" type="text" class="validate">
+          <label for="pharmacie">Pharmacie</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+          <input id="nompharmacien" type="text" class="validate">
+          <label for="nompharmacien">Nom Pharmacien</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s6">
+          <input id="ca_ttc" type="text" class="validate">
+          <label for="ca_ttc">CA TTC</label>
+        </div>
+        <div class="input-field col s6">
+          <input id="acompte" type="text" class="validate">
+          <label for="acompte">Acompte</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s6">
+          <select id="modereglement">
+            <option value="" disabled selected>Faites un choix</option>
+            <option value="COMPTANT">COMPTANT</option>
+            <option value="CHEQUE5">CHÈQUE 5 JRS</option>
+            <option value="CHEQUE10">CHÈQUE 10 JRS</option>
+            <option value="CHEQUE15">CHÈQUE 15 JRS</option>
+            <option value="CHEQUE30">CHÈQUE 30 JRS</option>
+            <option value="TRAITE5">TRAITE 5 JRS</option>
+            <option value="TRAITE10">TRAITE 10 JRS</option>
+            <option value="TRAITE15">TRAITE 15 JRS</option>
+            <option value="TRAITE30">TRAITE 30 JRS</option>
+          </select>
+          <label for="modereglement">Mode Règlement</label>
+        </div>
+        <div class="input-field col s6">
+          <input id="dateecheance" type="date" class="datepicker">
+          <label for="dateecheance">Échéance</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+          <textarea id="commentaireapresrelance" class="materialize-textarea"></textarea>
+          <label for="commentaireapresrelance">Commentaire après relance</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+          <input id="nomcommercial" type="text" class="validate">
+          <label for="nomcommercial">Nom Commercial</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s6">
+          <input id="reglement" type="number" class="validate">
+          <label for="reglement">Règlement</label>
+        </div>
+        <div class="input-field col s6">
+          <input id="datereglement" type="date" class="validate">
+          <label for="datereglement">Date Règlement</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+          <textarea id="suspension_commentaire" class="materialize-textarea"></textarea>
+          <label for="suspension_commentaire">Suspension / Commentaires</label>
+        </div>
+      </div>
+      <div class="row">
+        <button class="btn waves-effect waves-light btn-large right" type="submit" name="action">Enregistrer<i class="material-icons right">send</i>
+        </button>
+      </div>
+    </div>
+
+    <!-- tab1: sans fichier -->
+    <div id="avec" class="col s12">
+      <div class="row">
+        <div class="file-field input-field">
+          <div class="btn">
+            <span>Fichier à importer</span>
+            <input type="file">
+          </div>
+          <div class="file-path-wrapper">
+            <input class="file-path validate" type="text">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/jquery-2.1.4.min.js"></script>
+<script src="js/materialize.min.js"></script>
+<script src="js/josh.js"></script>
+
+</body>
+</html>
