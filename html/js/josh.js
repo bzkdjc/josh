@@ -1,13 +1,13 @@
 var dblite   = require('dblite');// npmjs.org: dblite
-var APP_ROOT = "app://127.0.0.1";
 //dblite.bin = "db/sqlite3.exe"; // win32
 dblite.bin   = "db/sqlite3";     // linux
-var db = dblite(APP_ROOT + '/db/db.sqlite3');
+var db = dblite('db/db.sqlite3');
+var _ = require('lodash');
+var moment = require('moment');
+var format = require('format-number');
+var numFormat;
 var datepicker1 = null,
-    datepicker2 = null,
-    datereleve = null,
-    dateecheance = null,
-    datereglement = null;
+    datepicker2 = null;
 var params;
 var paramsDatepicker = {
   monthsFull: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
@@ -56,9 +56,106 @@ var paramsDatepicker = {
   onStop: undefined
 };
 
+// nouvelle ligne dans le tableau
+function creerNouvelleLigne(enregistrementDb) {
+  "use strict";
+  var echeance = moment(enregistrementDb.cEcheance).format("DD/MM/YYYY");
+  var beginLigne = '<tr id=L"' + enregistrementDb.cCodeClient + '" data-ligne="' + JSON.stringify(enregistrementDb) + '">';
+  var colCode = '<td>'+ enregistrementDb.cCodeClient +'</td>';
+  var colRaisonSociale = '<td>' + enregistrementDb.cRaisonSociale + '</td>';
+  var colPharmacien = '<td>' + enregistrementDb.cNomPharmacien + '</td>';
+  var colCaTtc = '<td>' + enregistrementDb.cCaTtc + '</td>';
+  var colAcompte = '<td>' + enregistrementDb.cAcompte + '</td>';
+  var colSoldeApresAcompte = '<td>' + enregistrementDb.cSoldeApresAcompte + '</td>';
+  var colModeReglement = '<td>' + enregistrementDb.cModeReglement + '</td>';
+  var colEcheance = '<td>' + echeance + '</td>';
+  var endLigne = '</tr>';
+  var childElementToAppend = beginLigne;
+  childElementToAppend    += colCode;
+  childElementToAppend    += colRaisonSociale;
+  childElementToAppend    += colPharmacien;
+  childElementToAppend    += numFormat(colCaTtc);
+  childElementToAppend    += numFormat(colAcompte);
+  childElementToAppend    += numFormat(colSoldeApresAcompte);
+  childElementToAppend    += colModeReglement;
+  childElementToAppend    += colEcheance;
+  childElementToAppend     = childElementToAppend + endLigne;
+  $('tbody').append(childElementToAppend);
+}
+
+// for excel gen
+function datenum(v, date1904) {
+  if(date1904) v+=1462;
+  var epoch = Date.parse(v);
+  return (epoch - new Date(Date.UTC(1899, 11, 30))) / (24 * 60 * 60 * 1000);
+}
+function Workbook() {
+  if(!(this instanceof Workbook)) return new Workbook();
+  this.SheetNames = [];
+  this.Sheets = {};
+}
+function s2ab(s) {
+  var buf = new ArrayBuffer(s.length);
+  var view = new Uint8Array(buf);
+  for (var i=0; i!=s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+  return buf;
+}
+function build_sheet() {
+	var ws = {};
+	var range = {s: {c:10000000, r:10000000}, e: {c:0, r:0 }};
+  for(var R = 0x0; R < TousEnregistrements.length; ++R) {
+    var CetEnregistrement = TousEnregistrements[R];
+    var cols = ['cDateFacturation','cPeriode','cCodeClient','cRaisonSociale','cNomPharmacien','cCaTtc','cAcompte',
+      'cSoldeApresAcompte','cModeReglement','cEcheance','cCommentaireApresEcheance','cNomCommercial','cReglement',
+      'cDateReglement','cSuspensionCommentaire'];
+    for(var C = 0x0; C < _.size(CetEnregistrement); ++C) {
+      if(range.s.r > R) range.s.r = R;
+      if(range.s.c > C) range.s.c = C;
+      if(range.e.r < R) range.e.r = R;
+      if(range.e.c < C) range.e.c = C;
+      var cell = {v: CetEnregistrement[cols[C]] };
+      if(cell.v == null) continue;
+      var cell_ref = XLSX.utils.encode_cell({c:C,r:R});
+
+      if(typeof cell.v === 'number') cell.t = 'n';
+      else if(typeof cell.v === 'boolean') cell.t = 'b';
+      else if(cell.v instanceof Date) {
+        cell.t = 'n'; cell.z = XLSX.SSF._table[14];
+        cell.v = datenum(cell.v);
+      }
+      else cell.t = 's';
+
+      ws[cell_ref] = cell;
+    }
+  }
+	if(range.s.c < 10000000) ws['!ref'] = XLSX.utils.encode_range(range);
+	return ws;
+}
+
+var NomFeuilleDeCalcul = "TPHARMA",
+    Classeur = new Workbook(),
+    data = [[1,2,3],[true, false, null, "sheetjs"],["foo","bar",new Date("2014-02-19T14:30Z"), "0.3"], ["baz", null, "qux"]],
+    FeuilleDeCalcul,
+    Classeur_out,
+    TousEnregistrements;
+
+function onGenererExcel_Click() {
+  "use strict";
+  FeuilleDeCalcul = build_sheet(data);
+  /* add worksheet to workbook */
+  Classeur.SheetNames.push(NomFeuilleDeCalcul);
+  Classeur.Sheets[NomFeuilleDeCalcul] = FeuilleDeCalcul;
+  Classeur_out = XLSX.write(Classeur, {bookType:'xlsx', bookSST:true, type: 'binary'});
+  saveAs(new Blob([s2ab(Classeur_out)],{type:"application/octet-stream"}), "test.xlsx");
+}
+
 
 window.onload = function () {
+  // la ligne suivante fait apparaitre la fenetre de debogage si elle est décommentée
   //require('nw.gui').Window.get().showDevTools();
+
+  numFormat = format({noUnits: true, integerSeparator:' ', decimal:','});
+
 
   //==periode date1
   params = $.extend({}, paramsDatepicker, {
@@ -90,38 +187,44 @@ window.onload = function () {
   });
   $('#date2').pickadate(params);
 
-  //==nouvel ajout/datereleve
-  params = $.extend({}, paramsDatepicker, {
-    onOpen: function() {
-      datereleve = this;
-    }
-  });
-  $('#datereleve').pickadate(params);
 
-  //==nouvel ajout/dateecheance
-  params = $.extend({}, paramsDatepicker, {
-    onOpen: function() {
-      dateecheance = this;
-    }
-  });
-  $('#dateecheance').pickadate(params);
-
-
-  //==nouvel ajout/datereglement
-  params = $.extend({}, paramsDatepicker, {
-    onOpen: function() {
-      datereglement = this;
-    }
-  });
-  $('#datereglement').pickadate(params);
-
-
-
-  $('.container .right > a.btn:first').click(function () {
+  // ===== les actions sur boutons ==========
+  //bouton Generer
+  $('#gen').click(onGenererExcel_Click);
+  //bouton Ajouter
+  $('#add').click(function () {
     location.replace('add.html');
   });
-  $('#btnback').click(function () {
-    location.replace(location.pathname.replace(/[\/][^\/]+$/, '/index.html'));
-  });
-  $('#modereglement').material_select();
+
+  // ==== chargement du tableau a partir de la base de donnees ===============
+  TousEnregistrements = [];
+  db.query(
+    'SELECT * FROM releves_facture_client ORDER BY date_facturation DESC',
+    function (err, rows) {
+      if (!err) {
+        var ReleveFacture = rows.length && rows[0];
+        if (ReleveFacture) {
+          var CetEnregistrement = {
+            cDateFacturation          : new Date(ReleveFacture[0x0]),
+            cPeriode                  : ReleveFacture[1],
+            cCodeClient               : ReleveFacture[2],
+            cRaisonSociale            : ReleveFacture[3],
+            cNomPharmacien            : ReleveFacture[4],
+            cCaTtc                    : parseInt(ReleveFacture[5]),
+            cAcompte                  : parseInt(ReleveFacture[6]),
+            cSoldeApresAcompte        : ReleveFacture[7],
+            cModeReglement            : ReleveFacture[8],
+            cEcheance                 : new Date(ReleveFacture[9]),
+            cCommentaireApresEcheance : ReleveFacture[10],
+            cNomCommercial            : ReleveFacture[11],
+            cReglement                : parseInt(ReleveFacture[12]),
+            cDateReglement            : new Date(ReleveFacture[13]),
+            cSuspensionCommentaire    : ReleveFacture[14]
+          };
+          TousEnregistrements.push(CetEnregistrement);
+          creerNouvelleLigne(CetEnregistrement);
+        }
+      }
+    }
+  );
 };

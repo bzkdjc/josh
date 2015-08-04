@@ -7,7 +7,7 @@
   "private": true,
   "window": {
     "title": "Josh",
-    "toolbar": false,
+    "toolbar": true,
     "frame": true,
     "width": 1100,
     "height": 700,
@@ -20,6 +20,9 @@
     "page-cache": false
   },
   "dependencies": {
-    "dblite": "^0.7.6"
+    "dblite": "^0.7.6",
+    "format-number": "^2.0.0",
+    "lodash": "^3.10.0",
+    "moment": "^2.10.6"
   }
 }

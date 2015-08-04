@@ -22,10 +22,10 @@
 <div class="container">
   <div class="row">
     <div class="left">
-      <a class="waves-effect waves-light btn light-blue"><i class="material-icons left">done</i>Générer Fichier Excel</a>
+      <a id="gen" class="waves-effect waves-light btn light-blue"><i class="material-icons left">done</i>Générer Fichier Excel</a>
     </div>
     <div class="right">
-      <a class="waves-effect waves-light btn"><i class="material-icons right">add_circle_outline</i>Ajouter nouveau</a>
+      <a id="add" class="waves-effect waves-light btn"><i class="material-icons right">add_circle_outline</i>Ajouter nouveau</a>
     </div>
   </div>
   <div class="row">
@@ -40,56 +40,29 @@
       <label for="date2">Au:</label>
     </div>
   </div>
-  <table class="hoverable">
+  <table class="centered">
     <thead>
     <tr>
       <th data-field="id">Code</th>
       <th data-field="name">Raison sociale</th>
-      <th data-field="price">Pharmacien</th>
+      <th data-field="name">Pharmacien</th>
       <th data-field="price">CA TTC</th>
       <th data-field="price">Acompte</th>
-      <th data-field="price">S. après A.</th>
-      <th data-field="price">Mode R.</th>
-      <th data-field="price">Échéance</th>
+      <th data-field="price">Solde après A.</th>
+      <th data-field="name">Mode R.</th>
+      <th data-field="date">Échéance</th>
     </tr>
     </thead>
     <tbody>
-    <tr>
-      <td>Alvin</td>
-      <td>Eclair</td>
-      <td>$0.87</td>
-      <td>vin</td>
-      <td>air</td>
-      <td>0.87</td>
-      <td>clair</td>
-      <td>87</td>
-    </tr>
-    <tr>
-      <td>Alan</td>
-      <td>Jellybean</td>
-      <td>$3.76</td>
-      <td>vin</td>
-      <td>air</td>
-      <td>0.87</td>
-      <td>clair</td>
-      <td>87</td>
-    </tr>
-    <tr>
-      <td>Jonathan</td>
-      <td>Lollipop</td>
-      <td>$7.00</td>
-      <td>vin</td>
-      <td>air</td>
-      <td>0.87</td>
-      <td>clair</td>
-      <td>87</td>
-    </tr>
     </tbody>
   </table>
 </div>
 
 <script src="js/jquery-2.1.4.min.js"></script>
 <script src="js/materialize.min.js"></script>
+<script src="js/xlsx.full.min.js"></script>
+<script src="js/Blob.js"></script>
+<script src="js/FileSaver.js"></script>
 <script src="js/josh.js"></script>
 
 </body>
