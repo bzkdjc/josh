@@ -6,6 +6,7 @@ Tous les fichiers sont au format *UTF-8*.
   * Décommenter ligne 2: `#win32`
 2. **Entrer dans le dossier de l'appli et faire**:
   * `npm install`
+  
   Cela va automatiquement installer tout module nécéssaire au fonctionnement qui n'est pas présent
 
 _Note_: La r2 fonctionne et génère le fichier Excel
